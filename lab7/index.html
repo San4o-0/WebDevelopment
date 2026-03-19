@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Counties API</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #container {
+            width: 500px;
+            height: 120px;
+            border: 2px solid black;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        #elid {
+            width: 100px;
+            height: 100px;
+            background: red;
+            position: absolute;
+            left: 200px;
+            top: 10px;
+            transition: left 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Пошук коду округу</h2>
+
+<input type="text" id="countyInput" placeholder="Введіть округ">
+<button id="btn">Знайти код</button>
+
+<div id="result"></div>
+<br>
+
+<h2>Форма</h2>
+
+<form id="form">
+    <input type="text" id="first_name" placeholder="Ім'я"><br><br>
+    <input type="text" id="last_name" placeholder="Прізвище"><br><br>
+    <input type="email" id="email" placeholder="Email"><br><br>
+
+    <button type="submit">Відправити</button>
+</form>
+
+<div id="error" style="color:red;"></div>
+
+
+<h2>Анімація</h2>
+<div id="container">
+<div id="elid"></div>
+</div>
+<br>
+
+<button id="left">Вліво</button>
+<button id="right">Вправо</button>
+
+
+<script src="lab7.js"></script>
+</body>
+</html>
