@@ -105,9 +105,9 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
           <div
             v-for="(plan, i) in plans"
             :key="plan.id"
-            class="relative bg-white rounded-2xl p-8 w-[340px] border-2 border-transparent hover:border-gray-400 shadow-md transition-all duration-300 overflow-hidden"
+            class="relative bg-white rounded-2xl p-8 w-85 border-2 border-transparent hover:border-gray-400 shadow-md transition-all duration-300 overflow-hidden"
           >
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r rounded-t-2xl" :class="accentClass[i]"></div>
+            <div class="absolute top-0 left-0 right-0 h-1 bg-linear-to-r rounded-t-2xl" :class="accentClass[i]"></div>
 
             <span class="inline-block text-xs font-medium px-2.5 py-1 rounded-md mb-4" :class="badgeClass[i]">
               {{ plan.badge }}
@@ -123,7 +123,7 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
             </p>
 
             <div class="relative mt-5 mb-5 group/btn">
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-[220px] bg-gray-900 text-white text-xs font-medium leading-snug rounded-xl px-3.5 py-2.5 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-55 bg-gray-900 text-white text-xs font-medium leading-snug rounded-xl px-3.5 py-2.5 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 You cannot change your plan until within 30 days of your next billing date.
                 <span class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></span>
               </div>
@@ -191,7 +191,7 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
           </div>
 
           <div v-else class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[900px]">
+            <table class="w-full text-left text-sm min-w-225">
               <thead class="bg-gray-800 text-white text-xs uppercase tracking-wider">
               <tr>
                 <th v-for="col in columns" :key="col.key"
@@ -209,12 +209,12 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
               <tbody class="divide-y divide-gray-50">
               <tr v-for="p in pageRows" :key="p.id" class="hover:bg-gray-50 transition-colors">
                 <td class="px-4 py-3">
-                  <img :src="p.thumbnail" :alt="p.title" class="w-[100px] h-[100px] object-cover rounded-xl shadow-sm"/>
+                  <img :src="p.thumbnail" :alt="p.title" class="w-25 h-25 object-cover rounded-xl shadow-sm"/>
                 </td>
-                <td class="px-4 py-3 font-semibold text-gray-900 max-w-[140px]">
+                <td class="px-4 py-3 font-semibold text-gray-900 max-w-35">
                   <p class="truncate">{{ p.title }}</p>
                 </td>
-                <td class="px-4 py-3 text-gray-500 max-w-[220px]">
+                <td class="px-4 py-3 text-gray-500 max-w-55">
                   <p class="line-clamp-3 text-xs leading-relaxed">{{ p.description }}</p>
                 </td>
                 <td class="px-4 py-3 font-mono font-bold text-gray-900 whitespace-nowrap">
