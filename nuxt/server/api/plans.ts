@@ -18,7 +18,7 @@ export default defineEventHandler(() => {
     {
       id: 2,
       title: "Pro",
-      price: "$120",
+      price: "$207.50",
       period: "/month",
       yearly: "$1440.00",
       badge: "Most popular",
@@ -33,7 +33,7 @@ export default defineEventHandler(() => {
     {
       id: 3,
       title: "Enterprise",
-      price: "$250",
+      price: "$457.50",
       period: "/month",
       yearly: "$3000.00",
       badge: "Best value",
