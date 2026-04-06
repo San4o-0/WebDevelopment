@@ -1,29 +1,21 @@
+
 <script setup lang="ts">
-useSeoMeta({ title: 'Список продуктів' })
+import type { Plan, BillingType } from '~/types/plan'
+import type { Product } from '~/types/product'
 
-interface Plan {
-  id: number
-  title: string
-  price: string
-  period: string
-  yearly: string
-  badge: string
-  features: string[]
-}
+useSeoMeta({
+  title: 'Список продуктів',
+  description: 'Products and pricing plans'
+})
 
-interface Product {
-  id: number
-  title: string
-  description: string
-  price: number
-  rating: number
-  brand: string
-  category: string
-  thumbnail: string
-}
+const billing = ref<BillingType>('annual')
 
-const { data: plans } = await useFetch<Plan[]>('/api/plans')
+const { data: plansData } = await useFetch<Plan[]>('/api/plans')
 const { data: products, pending, error } = await useFetch<Product[]>('/api/products')
+
+const plans = computed(() => {
+  return (plansData.value || []).filter(p => p.billing === billing.value)
+})
 
 const globalFilter = ref('')
 const pageSize = ref(10)
@@ -60,7 +52,10 @@ const filteredSorted = computed(() => {
 })
 
 const totalPages = computed(() => Math.max(1, Math.ceil(filteredSorted.value.length / pageSize.value)))
-watch([globalFilter, sortKey, sortAsc, pageSize], () => { page.value = 1 })
+
+watch([globalFilter, sortKey, sortAsc, pageSize], () => {
+  page.value = 1
+})
 
 const pageRows = computed(() => {
   const start = (page.value - 1) * pageSize.value
@@ -83,7 +78,6 @@ function sortIcon(key: SortKey) {
 const badgeClass = ['bg-gray-100 text-gray-500', 'bg-green-50 text-green-600', 'bg-amber-50 text-amber-600']
 const accentClass = ['from-green-400 to-green-300', 'from-blue-400 to-blue-300', 'from-amber-400 to-amber-300']
 const starColor = ['#22c55e', '#60a5fa', '#fbbf24']
-const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
 </script>
 
 <template>
@@ -100,7 +94,32 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
     <main class="max-w-7xl mx-auto px-4 sm:px-8 py-10 space-y-12">
 
       <section>
-        <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">Тарифні плани</h2>
+        <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-6">
+          Тарифні плани
+        </h2>
+
+        <div class="flex justify-end items-center gap-3 mb-6">
+          <span class="text-sm text-green-500 font-medium">Save up to 20%</span>
+
+          <div class="bg-gray-100 p-1 rounded-lg flex">
+            <button
+              @click="billing = 'annual'"
+              :class="billing === 'annual' ? 'bg-white shadow text-gray-900' : 'text-gray-500'"
+              class="px-4 py-1.5 text-sm rounded-md"
+            >
+              Annual
+            </button>
+
+            <button
+              @click="billing = 'monthly'"
+              :class="billing === 'monthly' ? 'bg-white shadow text-gray-900' : 'text-gray-500'"
+              class="px-4 py-1.5 text-sm rounded-md"
+            >
+              Monthly
+            </button>
+          </div>
+        </div>
+
         <div class="flex flex-wrap gap-6">
           <div
             v-for="(plan, i) in plans"
@@ -114,36 +133,70 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
             </span>
 
             <div class="flex items-baseline">
-              <span class="font-mono text-5xl font-bold text-gray-900 leading-none">{{ plan.price }}</span>
+              <span class="font-mono text-5xl font-bold text-gray-900 leading-none">
+                {{ plan.displayPrice }}
+              </span>
               <span class="text-sm text-gray-400 ml-1">{{ plan.period }}</span>
             </div>
 
             <p class="text-xs text-gray-400 mt-1.5">
-              Billed yearly at <strong class="text-gray-900 font-semibold">{{ plan.yearly }}</strong>
+              Billed yearly at
+              <span v-if="plan.oldPrice" class="line-through opacity-60 mr-1">
+                {{ plan.oldPrice }}
+              </span>
+              <strong class="text-gray-900 font-semibold">
+                {{ plan.billed }}
+              </strong>
             </p>
 
-            <div class="relative mt-5 mb-5 group/btn">
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-55 bg-gray-900 text-white text-xs font-medium leading-snug rounded-xl px-3.5 py-2.5 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                You cannot change your plan until within 30 days of your next billing date.
-                <span class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></span>
-              </div>
+            <p v-if="plan.savings" class="text-green-600 text-sm mt-1 font-medium">
+              {{ plan.savings }}
+            </p>
 
-              <button class="w-full py-3 bg-gray-100 group-hover/btn:bg-transparent group-hover/btn:border group-hover/btn:border-gray-900 text-gray-500 group-hover/btn:text-gray-900 text-sm font-semibold rounded-xl cursor-pointer transition-all duration-200">
-                {{ btnLabel[i] }}
-              </button>
-            </div>
+            <UButton
+              :to="{
+    path: '/products/checkout',
+    query: { planId: plan.id }
+  }"
+              block
+              size="lg"
+              color="neutral"
+              variant="ghost"
+              class="mt-5 rounded-xl
+         bg-gray-100
+         hover:bg-transparent
+         border border-transparent
+         hover:border-gray-900
+         text-gray-700
+         hover:text-gray-900"
+            >
+              Try It Free
+            </UButton>
 
-            <hr class="border-gray-100 mb-5"/>
+            <hr class="border-gray-100 my-5"/>
 
             <ul class="flex flex-col gap-3.5">
-              <li v-for="feat in plan.features" :key="feat" class="flex items-start gap-2.5">
+              <li
+                v-for="feat in plan.features"
+                :key="feat.title"
+                class="flex items-start gap-2.5"
+              >
                 <span class="mt-0.5 shrink-0">
                   <svg width="20" height="20" viewBox="0 0 16 16" fill="none">
                     <path d="M8 1C8 4.866 11.134 8 15 8C11.134 8 8 11.134 8 15C8 11.134 4.866 8 1 8C4.866 8 8 4.866 8 1Z"
                           :fill="starColor[i]"/>
                   </svg>
                 </span>
-                <strong class="text-sm text-gray-900 leading-snug">{{ feat }}</strong>
+
+                <div>
+                  <div class="text-sm text-gray-900 font-medium">
+                    {{ feat.title }}
+                  </div>
+
+                  <div v-if="feat.subtitle" class="text-xs text-gray-400">
+                    {{ feat.subtitle }}
+                  </div>
+                </div>
               </li>
             </ul>
           </div>
@@ -155,7 +208,7 @@ const btnLabel = ['Downgrade to Starter', 'Upgrade to Pro', 'Contact Sales']
 
         <div class="bg-white rounded-2xl shadow-md overflow-hidden">
 
-          <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-gray-100">
+          <div class="flex flex-wrap items-center justify-between text-gray-700 gap-4 p-4 border-b border-gray-100">
             <div class="relative">
               <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                    fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

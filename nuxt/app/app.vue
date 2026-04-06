@@ -47,11 +47,18 @@ useSeoMeta({
           color="neutral"
           variant="ghost"
         />
+
       </template>
     </UHeader>
 
     <UMain>
       <NuxtPage />
+      <UButton
+        to="/products/products"
+        label="Переглянути продукти"
+        color="neutral"
+        variant="solid"
+      />
     </UMain>
 
     <USeparator icon="i-simple-icons-nuxtdotjs" />
