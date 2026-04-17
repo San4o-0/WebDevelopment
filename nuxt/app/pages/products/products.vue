@@ -9,7 +9,7 @@ useSeoMeta({
 })
 
 const billing = ref<BillingType>('annual')
-
+const subscriptionStore = useSubscriptionStore()
 const { data: plansData } = await useFetch<Plan[]>('/api/plans')
 const { data: products, pending, error } = await useFetch<Product[]>('/api/products')
 
@@ -153,22 +153,21 @@ const starColor = ['#22c55e', '#60a5fa', '#fbbf24']
               {{ plan.savings }}
             </p>
 
+
             <UButton
-              :to="{
-    path: '/products/checkout',
-    query: { planId: plan.id }
+              @click="() => {
+    subscriptionStore.setPlan(plan)
+    navigateTo('/products/checkout')
   }"
               block
               size="lg"
-              color="neutral"
-              variant="ghost"
               class="mt-5 rounded-xl
-         bg-gray-100
-         hover:bg-transparent
-         border border-transparent
-         hover:border-gray-900
-         text-gray-700
-         hover:text-gray-900"
+           bg-gray-100
+           hover:bg-transparent
+           border border-transparent
+           hover:border-gray-900
+           text-gray-700
+           hover:text-gray-900"
             >
               Try It Free
             </UButton>

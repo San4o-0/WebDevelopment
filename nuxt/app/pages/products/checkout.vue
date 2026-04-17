@@ -5,12 +5,12 @@ useSeoMeta({ title: 'Checkout' })
 
 const route = useRoute()
 const router = useRouter()
+const subscriptionStore = useSubscriptionStore()
+const plan = computed(() => subscriptionStore.selectedPlan)
 
 const { data: plans } = await useFetch<Plan[]>('/api/plans')
 
-const plan = computed(() =>
-  plans.value?.find(p => p.id === Number(route.query.planId))
-)
+
 
 const formattedPrice = computed(() => {
   if (!plan.value) return ''
@@ -41,13 +41,14 @@ const submit = () => {
     </div>
 
     <div class="max-w-6xl mx-auto px-4 py-8">
-      <button
+      <UButton
         @click="router.back()"
-        class="text-sm text-gray-500 hover:text-gray-800 mb-4"
+        color="neutral"
+        variant="ghost"
+        class="mb-4"
       >
-        &lt;&lt; back
-      </button>
-
+        << back
+      </UButton>
       <h1 class="text-xl font-semibold text-gray-800 mb-2">
         You’re Almost In - Start Your 3-Day Free Trial Now!
       </h1>
@@ -124,15 +125,15 @@ const submit = () => {
             <span class="text-gray-400 text-xs">ⓘ</span>
           </h3>
 
-          <div class="border rounded-lg p-3 bg-gray-50 flex items-center gap-2 mb-4">
+          <div class="border rounded-lg p-3 bg-gray-50  flex items-center gap-2 mb-4">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <rect x="2" y="5" width="20" height="14" rx="2"/>
               <line x1="2" y1="10" x2="22" y2="10"/>
             </svg>
 
-            <input v-model="form.cardNumber" placeholder="Number" class="flex-1 bg-transparent outline-none text-sm"/>
-            <input v-model="form.expiry" placeholder="MM / YY" class="w-20 bg-transparent outline-none text-sm"/>
-            <input v-model="form.cvc" placeholder="CVC" class="w-16 bg-transparent outline-none text-sm"/>
+            <input v-model="form.cardNumber" placeholder="Number" class="flex-1 bg-transparent outline-none text-gray-600  text-sm"/>
+            <input v-model="form.expiry" placeholder="MM / YY" class="w-20 bg-transparent outline-none text-gray-600 text-sm"/>
+            <input v-model="form.cvc" placeholder="CVC" class="w-16 bg-transparent outline-none text-gray-600 text-sm"/>
           </div>
 
           <div class="border rounded-lg p-3 mb-4">
